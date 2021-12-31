@@ -79,5 +79,12 @@ Port forwarding done via command -
 Service is listening on assigned port in localhost -
 ![ESRunningonK8exposedviaPortForwarding](https://user-images.githubusercontent.com/6042946/147797075-d9f68064-985f-4603-bfea-7bfca207529a.PNG)
 
-
 For all the deployment , the manifest files are uploaded in the souce control , and can be used to re-create the entire thing from scratch again . Also , all detailed steps can be found at the blog link shared above .
+
+We also deploy fluentd as a daemonset that will route all log data from the containers to elasticsearch -
+![fluentd_configuration](https://user-images.githubusercontent.com/6042946/147813648-bbebae71-6969-4053-be53-58ead4d8655f.PNG)
+
+For the other deployment manifests please refer to the source control files .
+
+A sample Kibana dashboard is shown below -
+![SampleKibanaDashboard](https://user-images.githubusercontent.com/6042946/147813536-b355688e-cf11-4fef-876d-8fe50c8e8cab.PNG)
