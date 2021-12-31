@@ -38,15 +38,22 @@ Step 3 - Choose VPC Network , I chose default , as I did not have any difficult 
 Step 4 - Cluster capacity , I chose 2 nodes in a nodepool , ( 2vCPU + 4GB / node ) .
 
 With that very quickly I had my managed k8 setup hosted in DigitalOcean , named -> digitalocean-k8-challenge
+![ManagedK8SetupinDigitalOcean](https://user-images.githubusercontent.com/6042946/147797094-52096097-90df-44be-927b-7791fc8c7a0a.PNG)
 
 Once the cluster is created , I had to connect to the cluster using kubectl from my local machine/developer workstation .
 This is also pretty simple . 
 The idea is to download the kubeconfig file , but we do not need to do it manually . 
-I used DigitalOcean Client API tool - doctl .
+I used DigitalOcean Client API tool - doctl , which is a client tool , and authenticates with the DigitalOcean servers via API token , as shown below -
+![doctlAPItoken](https://user-images.githubusercontent.com/6042946/147797118-543f4eb8-c953-46c6-ad9d-b46f55b1ece4.PNG)
 
 Steps to install doctl can be found here - https://docs.digitalocean.com/reference/doctl/how-to/install/ ( they are extremely straightforward )
 
 Once doctl was installed , I downloaded the kubeconfig directly via doctl - doctl kubernetes cluster kubeconfig save 3d08b923-a43c-49f7-9e6c-15ca6a2bdaf8 ( in my case ) , and post that , I could leverage standard kubectl commands , as if I am directly connected to that k8 setup.
+As you can see below , I am connected to the Digital Ocean managed k8 cluster setup in the cloud -
+![KubectlGetNodes](https://user-images.githubusercontent.com/6042946/147797135-1498e43a-1e47-49d7-a2d7-99e81d344602.PNG)
+
+Actually , using doctl , it is easy to download the kubeconfig details , and append it to the kubeconfig file in the local user profile , as shown below -
+![localkubeconfigwithdigitaloceanremoteclusterdata](https://user-images.githubusercontent.com/6042946/147797165-770553b2-9da4-4125-b593-2a670cbb2925.PNG)
 
 At this point , I had everything ready to create the actual deployments for the logging stack , all pre-requisites were in place .
 
@@ -54,5 +61,23 @@ Once this was done , I followed this blog (https://www.digitalocean.com/communit
 
 To do the deployment , i create a namespace ( logical segregation ) called kube-logging , all deployment artifacts was pushed there .
 Then I deployed the Elastic statefulset and headless service , then deployed Kibana service , and finally the fluentd daemon set .
+
+A capture of all the kubernetes objects that are deployed into the kube-logging namespace can be found below -
+![AllResourcesDeployedinK8LoggingNamespace](https://user-images.githubusercontent.com/6042946/147797029-45f75238-e383-41d1-a13d-4ae11b3deae6.PNG)
+
+All the services are exposed via PortForwarding , and then accessed from localhost , for ease of use during POC .
+For example , the Kibana service is exposed via PortForwarding , as shown below :
+![KibanaPortForwardingCommand](https://user-images.githubusercontent.com/6042946/147796944-ff31144c-80a7-4bd4-ab20-3aafdd92d3be.PNG)
+
+As soon as the port-forwarding is done , the kibana service can be accessed via localhost , just like any other Web UI , as shown below -
+![KibanaRunningOnLocalhostInK8ViaPortForwarding](https://user-images.githubusercontent.com/6042946/147797005-66bf652b-4e1f-4174-8670-dc3baa48ceaf.PNG)
+
+The same is done for the elasticsearch service as well -
+Port forwarding done via command - 
+![ESPortForwardingCommand](https://user-images.githubusercontent.com/6042946/147797052-124bf90a-ba62-4d7d-aae6-211c9aa49301.PNG)
+
+Service is listening on assigned port in localhost -
+![ESRunningonK8exposedviaPortForwarding](https://user-images.githubusercontent.com/6042946/147797075-d9f68064-985f-4603-bfea-7bfca207529a.PNG)
+
 
 For all the deployment , the manifest files are uploaded in the souce control , and can be used to re-create the entire thing from scratch again . Also , all detailed steps can be found at the blog link shared above .
